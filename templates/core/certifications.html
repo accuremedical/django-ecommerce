@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+{% load cart_template_tag %}
+{% load form_filters %}
+{% block content %}
+
+
+        <section class=" section-padding topSpace">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="page-innerhead">Certifications</h2>
+                    </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="imgBlock">
+                                <img src="{% static 'images/certification-1.jpg'%}" alt="certification" class="img-fluid">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="imgBlock">
+                                <img src="{% static 'images/certification-2.jpg' %}" alt="certification" class="img-fluid">
+                            </div>
+                        </div>
+
+                
+                </div>
+            </div>
+        </section>
+{% endblock %}

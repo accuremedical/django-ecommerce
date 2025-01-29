@@ -1,0 +1,39 @@
+
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block content %}
+        <section class="sign-in-form section-padding topSpace">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto col-12">
+                        <h1 class="hero-title text-center greenText add-blog">Edit Blog</h1>
+                        {% if messages != 'Blog added successfully!' %}
+                        {% for message in messages %}
+                        <h1 class="badge badge-light "style="color:red; text-align:center;">{{message}}</h1>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-lg-8 col-11 mx-auto">
+                                <form role="form" method="post"enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {{form}}
+                                    <!-- {% for field in form.visible_fields %} -->
+                                    <!-- <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div> -->
+                                    <!-- {% endfor %} -->
+                                    <button type="submit" class="btn greenBtn form-control mt-4 mb-3">
+                                        Edit
+                                    </button>      
+                                </form>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+  {% endblock %}

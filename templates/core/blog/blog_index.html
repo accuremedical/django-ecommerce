@@ -1,0 +1,122 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+{% load cart_template_tag %}
+{% load form_filters %}
+{% block content %}
+<section class="blog section-padding topSpace">
+    <div class="container">
+        {% if messages %}
+
+        <ul class="message-container">
+            {% for message in messages %}
+            <li class="alert alert-success">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="text-left">
+            <h4 class="link-head"><a href="{% url 'index'%}">Home</a><span>></span><a href="#">blog</a></h4>
+
+        </div>
+        <div class="row" id="blog-posts">
+            <!-- Blog Posts will go here -->
+            {% for blog in page_obj %}
+            <div class="col-md-6 mb-4">
+
+                <div class="card blog-card">
+                    <div class="blog-buttons">
+                        {% if user.is_superuser%}
+                        <form method="POST" action="{% url 'delete_blog' blog.id %}" class="trash">
+                            {% csrf_token %}
+                            <button type="submit" class="fa fa-trash"></button>
+                        </form>
+                        <a href="{% url 'edit_blog' id=blog.id %}" class="fa fa-pencil edit"></a>
+
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'blog' blog.pk %}">
+
+                        <div class="cardImage">
+                            <img src="{{blog.img_1.url}}" class="card-img-top" alt="Blog image">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'blog' blog.pk %}">{{blog.blog_title}}</a></h5>
+                            <p class="card-text">{{blog.blog_desc_1|truncatewords:30}}</p>
+                            <a href="{% url 'blog' blog.pk %}" class="btn greenBtn">Read More</a>
+                            <p class="card-text lead">{{blog.blog_post_date}}</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+            {% empty %}
+            <div class="col-md-6 mb-4">
+                <p>No blog posts available!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-4 pb-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <!-- Page Number Links -->
+                {% for page_num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</section>
+
+{% endblock %}

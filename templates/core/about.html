@@ -1,0 +1,77 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+{% load cart_template_tag %}
+{% load form_filters %}
+{% block content %}
+
+            <section class="pb-0 topSpace">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="banner-image">
+                                <img src="{% static 'images/header/abt-banner.jpg' %}" alt="image">
+                                <div class="header-block">
+                                    <h2 class="greenText mb-2">About <span class="text-dark">Us</span></h2>
+                                    <h4 class="link-head mb-0"><a href="{% url 'index' %}">Home</a><span>&gt;</span><a href="{% url 'about' %}">About Us</a></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-gap">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="large-paragraph">Welcome to Accu-Mart Medical Products Manufacturing, where innovation meets precision in healthcare. We are dedicated to designing and manufacturing medical devices and products that improve the quality of life for patients and support healthcare professionals globally.</p>
+                            <br>
+                            <p class="large-paragraph">Accu-Mart was founded with a singular vision: to provide top-quality measurement instruments that meet the exacting needs of our customers. With years of experience in the industry, we understand the importance of precision in various fields, from engineering and manufacturing to construction and research.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-padding mission-vision">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="greenText">Our Mission</h3>
+                            <p class="lead">
+                                To advance healthcare worldwide by providing cutting-edge medical technologies that ensure accuracy, safety, and efficiency in patient care.
+                                Our mission is to develop and implement integral information technology and medical technology solutions to allow hospitals and turn innovative ideas into reality, and to successfully launch them into the market aiming to improve people’s quality of life and the sustainability of the health system.
+                            </p>
+                            <br>
+                            <h3 class="greenText">Our Vision</h3>
+                            <p class="lead">To be a global leader in medical product manufacturing, setting benchmarks in quality and sustainability.
+                                We want to promote new ideas and make them a reality, so that they may improve people’s quality of life and the sustainability of the health system. Although information gathering, processing, communication, and management are essential to health care delivery.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="highlights section-gap">
+                                <h3 class="greenText">What We Offer</h3>
+                                <ul>
+                                  <li class="large-paragraph"><strong>Critical Care Devices:</strong> Patient monitors, infusion pumps, and ventilators for ICU and emergency care.</li>
+                                  <li class="large-paragraph"><strong>Surgical Instruments:</strong> High-precision tools designed for modern operating rooms.</li>
+                                  <li class="large-paragraph"><strong>Diagnostic Equipment:</strong> Advanced imaging systems and lab diagnostic tools.</li>
+                                  <li class="large-paragraph"><strong>Anesthesia Solutions:</strong> Reliable workstations and accessories for surgical teams.</li>
+                                </ul>
+                            </div>
+                            <div class="team-section section-gap">
+                                <h3 class="greenText">Meet Our Team</h3>
+                                <p class="large-paragraph">Our team consists of experienced engineers, researchers, and healthcare professionals dedicated to creating impactful medical products. Together, we drive innovation and deliver excellence at every step of the manufacturing process.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+{% endblock %}

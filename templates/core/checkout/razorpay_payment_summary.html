@@ -1,0 +1,666 @@
+{% load static %}
+{% load cart_template_tag %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    
+    <link rel="icon" href="{% static 'svg/accu-mart-logo.jpg' %}" type="image/jpg+xml">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+
+    <!-- fontawesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'css/slick.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/customstyle.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/tooplate-little-fashion.css' %}" rel="stylesheet">
+    <link href="{% static 'js/bootstrap.bundle.min.js' %}" rel="stylesheet">
+    <link href="{% static 'js/jquery.min.js' %}" rel="stylesheet">
+
+</head>
+
+<body>
+    <section class="preloader">
+        <div class="spinner">
+            <span class="sk-inner-circle"></span>
+        </div>
+    </section>
+
+    <main>
+        <div class="header_navigation">
+            <div class="navbar top-nav" id="topmenu">
+                <div class="container">
+
+                    <button class="navbar-toggler d-lg-none d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'images/header/acculogo.jpg' %}" alt="logo">
+                    </a>
+                    
+                    <div class="d-lg-none rightNav">
+                        <ul>
+                           
+                            {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+
+                            <li class=" user-icon">
+                                <a class="nav-link bi-plus-circle custom-icon" href="" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'add_blog' %}">Add Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'add_product' %}">Add Product</a></li>
+                                </ul>
+                            </li>                               
+                            {% endif %}
+
+                           
+                            <li class="cartIcon">
+                                    <a class="nav-link bi-heart custom-icon" href="{% url 'view_wishlist' %}">
+                                     
+                                        <span class="notify-count" id="wishlist-count">
+                                            {{ request.user | wishlist_item_count }}</span>    
+                                    </a>
+                            </li>
+                            
+                           
+                            <li class="cartIcon">
+                                <a class="nav-link bi-cart custom-icon" href="{% url 'view_cart'%}"
+                                    title="Add to Cart">
+                                    <span  class="notify" id="cart-count">{{request.user | cart_item_count}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="user-icon me-2">
+                                <a class="nav-link  dropdown-toggle" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="user-initials">{{ user.username|slice:":1"|upper }}</span>
+                                </a>
+                            <ul class="dropdown-menu">
+
+                                <li class="nav-item">
+                                    <a class="nav-link" style="font-size:1rem;line-height: 0.5 !important;"
+                                        href="{% url 'index' %}">{{user.username|capfirst}}</a>
+                                </li>
+
+                                <li><a class="nav-link" href="{% url 'user_logout' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign Out</a></li>
+                                
+                            </ul>
+                        </li>
+                            {% else %}
+
+                            <li class="user-icon me-2">
+                                <a class="nav-link bi-person custom-icon" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'user_login' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign In</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'user_register' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign Up</a></li>
+                                </ul>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="collapse navbar-collapse d-lg-none " id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'index' %}" id="link-home">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'about' %}" id="link-about">About Us</a>
+                            </li>
+
+                            <li class="nav-item dropdown category-list">
+                                <a class="nav-link dropdown-toggle {% if category %} active {% endif %}" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="link-categories">
+                                    Categories
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'all_products' %}">All Products</a>
+                                    </li>
+
+                                    {% for cat in categories %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{% url 'fetch_product_cate' %}?category_id={{ cat.id }}"
+                                            class="{% if category and category.id == cat.id %}active{% endif %}">
+                                            {{ cat.category_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'contact_us' %}" id="link-contact">Support</a>
+                            </li>
+
+
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">More</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'blog_index' %}">Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'disclaimer' %}">Disclaimer</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'certification' %}">Certifications</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'shipping_policy' %}">Shipping Policy</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'terms_and_conditions' %}">Terms &
+                                            Conditions</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'refund_policy' %}">Cancellation, Return &
+                                            Refund
+                                            Policy</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                      
+                    </div>
+                    
+                    <div class="top-right">
+                        <div class="search-box me-5">
+                            <div class="input-group bg-transparent">
+                                <input class="form-control py-2 pr-5 mr-1 " type="search" value="search" id="example-search-input1">
+                                <span class="input-group-append">
+                                    <div class="input-group-text border-0 bg-transparent ml-n5"><i class="fa fa-search"></i></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-lg-block d-none">
+                            {% if user.is_superuser %}
+                            <a href="{% url 'order_detail' %}" class="admin me-2"id="order-list">Admin</a>
+                            {% endif %}
+                            <a href="tel:1800-419-9029" class="top-link bg-green fa fa-phone">1800-419-9029</a>
+                        </div>
+                        <!-- <a class="nav-link fa fa-shopping-cart d-lg-block d-none nav-cart" href="#" title="Add to Cart"></a> -->
+                    </div>
+                </div>                     
+                
+            </div>
+            <nav class="navbar navbar-expand-lg d-lg-block d-none border-top" id="navigation">
+                <div class="container">
+                    <button class="navbar-toggler d-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse d-lg-block d-md-none" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'about' %}">About Us</a></li>
+                            <li class="nav-item dropdown category-list">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown">Categories</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                  
+                                    <li><a class="dropdown-item" href="{% url 'all_products' %}">All Products</a>  </li>
+
+                                    {% for cat in categories %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{% url 'fetch_product_cate' %}?category_id={{ cat.id }}"
+                                            class="{% if category and category.id == cat.id %}active{% endif %}">
+                                            {{ cat.category_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'contact_us' %}">Support</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'blog_index' %}">Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'disclaimer' %}">Disclaimer</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'certification' %}">Certifications</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'terms_and_conditions' %}">Terms & Conditions</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'shipping_policy' %}">Shipping Policy</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'refund_policy' %}">Cancellation, Return & Refund Policy</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+
+                        <div class="d-none d-lg-block rightNav">
+                            <ul>
+                                {% if user.is_authenticated %}
+                                {% if user.is_superuser %}
+                                <li class=" user-icon">
+                                    <a class="nav-link bi-plus-circle custom-icon" href="" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'add_product' %}">Add Product</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'add_blog' %}">Add Blog</a></li>
+                                    </ul>
+                                </li>
+                               
+                                {% endif %}
+                                <li class="me-2 cartIcon" id="cart-info">
+                                    <a class="nav-link bi-heart custom-icon" href="{% url 'view_wishlist' %}" title="Add to Cart"id="wishlist">
+                                        <span class="notify-count" id="wishlist-item-count">{{ request.user | wishlist_item_count }}</span>
+                                        
+                                    </a>
+                                </li>
+                                <li class="me-2 cartIcon" id="cart-info">
+                                    <a class="nav-link bi-cart custom-icon" href="{% url 'view_cart' %}" title="Add to Cart"id="cart">
+                                        <span class="notify" id="cart-item-count">{{ request.user | cart_item_count }}</span>
+                                        
+                                    </a>
+                                </li>
+                                <li class="user-icon me-2">
+                                    <a class="nav-link  dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="user-initials">{{ user.username|slice:":1"|upper }}</span>
+                                    </a>
+                                <ul class="dropdown-menu">
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" style="font-size:1rem;line-height: 0.5 !important;"
+                                            href="{% url 'index' %}">{{user.username|capfirst}}</a>
+                                    </li>
+
+                                    <li><a class="nav-link" href="{% url 'user_logout' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign Out</a></li>
+                                    
+                                </ul>
+                            </li>
+                                {% else %}
+                                <li class="user-icon">
+                                    <a class="nav-link bi-person custom-icon" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="nav-item">
+                                            <a class="nav-link" style="font-size:1.1rem;"
+                                                href="{% url 'user_login' %}">Sign In</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" style="font-size:1.1rem;"
+                                                href="{% url 'user_register' %}">SignUp</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="d-lg-none resp-searchbar">
+                <div class="search-box">
+                    <form class="d-flex input-group bg-transparent" method="GET" action="/search/">
+                        <input class="form-control py-2 pr-5 mr-1 " type="search" placeholder="Search"
+                            aria-label="Search" name="query" value="">
+                        <button class="input-group-text border-0 bg-transparent ml-n5" type="submit"><i
+                                class="fa fa-search" aria-hidden="true"></i></button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+         <!-- <div class="header_navigation">
+       
+            <nav class="navbar navbar-expand-lg ">
+                <div class="container">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'images/header/acculogo.jpg' %}" alt="logo">
+                    </a>
+
+                    <div class="d-lg-none">
+                        <a href="{% url 'user_login'%}" class="bi-person custom-icon me-3"></a>
+
+                        <a href="{% url 'fetch_product_cate' %}" class="bi-bag custom-icon"></a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'index' %}">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                            </li>
+
+                            <li class="nav-item dropdown category-list">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categories
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+ 
+                                    <li><a class="dropdown-item" href="{% url 'fetch_product_cate' %}">All Products</a>
+                                    </li>
+
+                                    {% for cat in categories %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{% url 'fetch_product_cate' %}?category_id={{ cat.id }}"
+                                            class="{% if category and category.id == cat.id %}active{% endif %}">
+                                            {{ cat.category_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'contact_us' %}">Support</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">More</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'blog_index' %}">Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'disclaimer' %}">Disclaimer</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'certification' %}">Certifications</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'shipping_policy' %}">Shipping Policy</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'terms_and_conditions' %}">Terms &
+                                            Conditions</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'refund_policy' %}">Cancellation, Return &
+                                            Refund Policy</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                            <ul id = "cart">
+                                {% if user.is_authenticated %}
+                                {% if user.is_superuser %}
+                                <li class=" user-icon">
+                                    <a class="nav-link bi-plus-circle custom-icon" href="" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'add_product' %}">Add Product</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'add_blog' %}">Add Blog</a></li>
+                                    </ul>
+                                </li>
+                               
+                                {% endif %}
+                                <li class="me-2 cartIcon" id="cart-info">
+                                    <a class="nav-link bi-heart custom-icon" href="{% url 'view_wishlist'%}"
+                                        title="view wishlist">
+                                    <span class="notify-count" id="wishlist-item-count">{{request.user | wishlist_item_count}}</span>
+                                     
+                                    </a>
+                                </li>
+                                <li class="me-2 cartIcon" id="cart-info">
+                                    <a class="nav-link bi-cart custom-icon" href="{% url 'view_cart'%}"
+                                        title="View Cart">
+                                        <span class="notify" id="cart-item-count">{{request.user | cart_item_count}}</span>
+                                       
+                                    </a>
+                                </li>
+                           
+                                <li class="user-icon me-2">
+                                    <a class="nav-link bi-person custom-icon" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" style="font-size:1.1rem;"
+                                                href="{% url 'index' %}">{{user.username}}</a>
+                                        </li>
+
+                                        <li><a class="dropdown-item" href="{% url 'user_logout' %}">Sign Out</a></li>
+                                        
+                                    </ul>
+                                </li>
+                                {% else %}
+                                <li class="user-icon me-2">
+                                    <a class="nav-link bi-person custom-icon" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+
+                                        <li>
+                                            <button style=" padding: 0; border-radius: 5px; border: 1px solid #fff;">
+                                                <a class="dropdown-item" href="{% url 'user_login' %}">Sign In</a>
+                                            </button>
+                                        </li>
+                                        <li><button
+                                                style="background-color: #ee4d4d; padding: 0; border-radius: 5px; border: 1px solid #fff;"><a
+                                                    class="dropdown-item"
+                                                    href="{% url 'user_register' %}">Sign Up</a></button></li>
+
+                                    </ul>
+                                </li>
+                                {% endif %}
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+            </nav> 
+        </div> -->
+        <section class="section-padding topSpace inner-checkout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-12 customer-details">
+                        <div class="main-cart">
+                            {% if user.authenticated %}
+                            <div class="cart-head">
+                                <h3 class="head-text">Have an account? <a href="{% url 'user_login' %}"> Log in</a></h3>
+                            </div>
+                            {% endif %}
+                            <div class="cart-head d-flex">
+                                <h3 class="head-text">Customer Details</h3>
+                                <a href="{% url 'view_cart' %}" class="btn btn-secondary">
+                                    <i class="fa fa-shopping-cart"></i> View Cart
+                                </a>
+                            </div>
+
+                       
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <div class="main-cart">
+                                        <div class="cart-head">
+                                        <p class="lead" >{{customer_details.first_name}} {{customer_details.last_name}} <br>{{customer_details.phone}}<br>{{customer_details.email}}<br>{{customer_details.address}}, {{customer_details.city}}, {{customer_details.state}}, {{customer_details.zip_code}}, {{customer_details.country.name}}</p> 
+                                      
+                                        
+                                        </div>
+                                      
+                                        <form action="/payment/handlerequest/" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="razorpay_payment_id" value="{{ order_id }}">
+                                            <input type="hidden" name="razorpay_order_id" value="{{ order_id }}">
+                                            <input type="hidden" name="razorpay_signature" value="{{ razorpay_signature }}">
+                                            <button type="submit"id="rzp-button1" class="btn greenBtn"id="rzp-button1">
+                                            <i class="fa fa-credit-card"></i> Proceed with Razorpay</button>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="delivery">
+                                <p class="border-bottom pb-3">Delivery method</p>
+                                <!-- <p>Payment</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-12 order scroll">
+                        <div class="main-cart boxShadow">
+                            <div class="cart-head d-flex border-bottom">
+                                <h3 class="head-text">Order summary<span class="quantity"><span>(<span>{{cart_item_count}}</span></span>)</span></h3>
+                                <a href="{% url 'view_cart' %}">Edit Cart</a>
+                            </div>
+                            <div class="order-summary">
+                                <div class="total-order">
+                                    <div class="">
+                                        <table class="table">
+                                            <tbody>
+                                                {% for order_item in order.items.all %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="cart-img"><img src="{{order_item.product.img.url}}"
+                                                                alt="{{order_item.product.Product_Name}}"></div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="lead mb-0">{{order_item.product.Product_Name}}</p>
+                                                        <strong>₹{{order_item.product.price}}</strong>
+                                                        <p class="lead mb-0"><strong>Qty:</strong>
+                                                            <span>{{order_item.quantity}}</span>
+                                                        </p>
+                                                        <p class="lead mb-0"><strong>GST:</strong>
+                                                            <span>{{order_item.product.gst_percentage}}</span>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <div>
+                                                    <p>Cart is Empty!</p>
+                                                </div>
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                
+                                    <div class="sub-total border-bottom">
+                                        {% if order.get_subtotal_price %}
+                                        <div class="d-flex">
+                                            <h4 class="lead">Subtotal</h4>
+                                            <p class="lead">₹{{order.get_subtotal_price}}</p>
+                                        </div>
+                                        {% endif %}
+                                        <div class="d-flex">
+                                            <h4 class="lead">Delivery</h4>
+                                            <p class="lead">--</p>
+                                        </div>
+                                        {% if order.get_total_gst %}
+                                        <div class="d-flex">
+                                            <h4 class="lead">GST(%)</h4>
+                                            <p class="lead">₹{{order.get_total_gst}}</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if order.get_total_price %}
+                                    <div class="total d-flex">
+                                        <h3>Total</h3>
+                                        <p>₹{{order.get_total_price}}</p>
+                                    </div>
+                                    {% endif %}
+
+
+                                </div>
+
+                                <p class="secure"><i class="fa fa-lock" aria-hidden="true"></i>Secure Checkout</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+</body>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{razorpay_merchant_id}}", // Enter the Key ID generated from the Dashboard
+        "amount": "{% widthratio final_price  1  100 %}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "Accu-mart", //your business name
+        "description": "Test Transaction",
+        "image":"../static/images/header/acculogo.jpg",
+        // "image": "https://example.com/your_logo",
+        "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "callback_url": "{% url 'handlerequest' %}",
+        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+            "name": "{{request.user.username}}", //your customer's name
+            "email": "{{request.user.email}}",
+            "contact": "+91" + "{{request.user.phone_field}}" //Provide the customer's phone number for better conversion rates 
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+<!-- <script>
+    // set active in nav
+document.addEventListener("DOMContentLoaded", function() {
+  const currentPage = window.location.pathname;
+  console.log('Current page: ', currentPage);  // Log the current path
+
+  // Check if the current path matches specific pages
+  if (currentPage === '/' || currentPage.includes('index')) {
+    setActive('home');  // Home page
+  } else if (currentPage.includes('about')) {
+    setActive('about'); // About page
+  } else if(currentPage.includes('categories')){
+    setActive('categories');
+  } else if(currentPage.includes('contact')){
+    setActive('contact');
+  } else if(currentPage.includes(wishlist)){
+    setActive('wishlist');
+  } else if(currentPage.includes(cart)){
+    setActive('cart');
+  }
+});
+
+function setActive(page) {
+  // Remove the 'active' class from all nav links
+  const links = document.querySelectorAll('.nav-link');
+  links.forEach(link => {
+    link.classList.remove('active');
+  });
+
+  // Add the 'active' class to the correct link
+  const activeLink = document.getElementById('link-' + page);
+  if (activeLink) {
+    activeLink.classList.add('active');
+  }
+
+}
+
+</script> -->
+<!-- JAVASCRIPT FILES -->
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/Headroom.js' %}"></script>
+<script src="{% static 'js/jQuery.headroom.js' %}"></script>
+<script src="{% static 'js/slick.min.j' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+
+</html>

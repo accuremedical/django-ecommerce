@@ -1,0 +1,76 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+{% load cart_template_tag %}
+{% load form_filters %}
+{% block content %}
+
+
+        <section class="section-padding topSpace blog">
+            <div class="container">
+
+                <div class="row">
+                                    
+                    <div class="col-12">
+                        <h5 class="entry-title">{{blog.blog_title}}</h5>
+                        <p class="entry-meta">{{blog.blog_post_date}} <span class="special-text">-</span> by Accu-Mart</p>
+                        
+                        <p class="large-paragraph">
+                            {{blog.blog_desc_1}}
+                        </p>
+                    </div>
+                    <div class="col-12 blogImage mb-4">
+                        <img src="{{blog.img_1.url}}" alt="image" class="img-fluid">
+                    </div>
+                    <div class="col-12">
+                        {% if blog.blog_heading_1 %}
+                        <h5>{{blog.blog_heading_1}}</h5>
+                        <p class="large-paragraph">
+                            {{blog.blog_desc_2}}
+                        {% endif %}
+                         
+                        {% if blog.blog_heading_2 %}
+                        <h5>{{blog.blog_heading_2}}</h5>
+                        <p class="large-paragraph">
+                          {{blog.blog_desc_3}}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% if blog.img_2 %}
+                    <div class="col-12 blogImage mb-4">
+                        <img src="{{blog.img_2.url}}" alt="image" class="img-fluid">
+                    </div>
+                    {% endif %}
+
+                    <div class="col-12">
+                        {% if blog.blog_heading_3 %}
+                        <h5>{{blog.blog_heading_3}}</h5>
+                        <p class="large-paragraph">
+                            {{blog.blog_desc_4}}
+                        </p>
+                        {% endif %}
+
+                        {% if blog.blog_heading_4 %}
+                        <h5>{{blog.blog_heading_4}}</h5>
+                        <p class="large-paragraph">
+                            {{blog.blog_desc_5}}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    {% if blog.blog_conclusion_h %}
+                    <div class="col-12">
+                        <h5>{{blog.blog_conclusion_h}}</h5>
+                        <p class="large-paragraph">
+                            {{blog.blog_desc_conc}}
+                        </p>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+            
+        </section>
+
+ {% endblock %}

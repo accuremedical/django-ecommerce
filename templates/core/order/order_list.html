@@ -1,0 +1,600 @@
+{% load static %}
+{% load cart_template_tag %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    
+    <link rel="icon" href="{% static 'svg/accu-mart-logo.jpg' %}" type="image/jpg+xml">
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
+    <!-- fontawesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+    <link href="{% static 'css/tooplate-little-fashion.css' %}" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    <section class="preloader">
+        <div class="spinner">
+            <span class="sk-inner-circle"></span>
+        </div>
+    </section>
+
+    <main>
+        <div class="header_navigation">
+            <div class="navbar top-nav" id="topmenu">
+                <div class="container">
+
+                    <button class="navbar-toggler d-lg-none d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'images/header/acculogo.jpg' %}" alt="logo">
+                    </a>
+                    
+                    <div class="d-lg-none rightNav">
+                        <ul>
+                           
+                            {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+
+                            <li class="user-icon">
+                                <a class="nav-link bi-plus-circle custom-icon" href="" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'add_blog' %}">Add Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'add_product' %}">Add Product</a></li>
+                                </ul>
+                            </li>                               
+                            {% endif %}
+
+                           
+                            <li class="cartIcon">
+                                    <a class="nav-link bi-heart custom-icon" href="{% url 'view_wishlist' %}">
+                                     
+                                        <span class="notify-count" id="wishlist-count">
+                                            {{ request.user | wishlist_item_count }}</span>    
+                                    </a>
+                            </li>
+                            
+                           
+                            <li class="cartIcon">
+                                <a class="nav-link bi-cart custom-icon" href="{% url 'view_cart'%}"
+                                    title="Add to Cart">
+                                    <span  class="notify" id="cart-count">{{request.user | cart_item_count}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="user-icon me-2">
+                                <a class="nav-link  dropdown-toggle" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="user-initials">{{ user.username|slice:":1"|upper }}</span>
+                                </a>
+                            <ul class="dropdown-menu">
+
+                                <li class="nav-item">
+                                    <a class="nav-link" style="font-size:1rem;line-height: 0.5 !important;"
+                                        href="{% url 'index' %}">{{user.username|capfirst}}</a>
+                                </li>
+
+                                <li><a class="nav-link" href="{% url 'user_logout' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign Out</a></li>
+                                
+                            </ul>
+                        </li>
+                            {% else %}
+
+                            <li class="user-icon me-2">
+                                <a class="nav-link bi-person custom-icon" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'user_login' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign In</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'user_register' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign Up</a></li>
+                                </ul>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+             
+
+                    <div class="collapse navbar-collapse d-lg-none " id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'index' %}">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                            </li>
+
+                            <li class="nav-item dropdown category-list">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categories
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'fetch_product_cate' %}">All Products</a>
+                                    </li>
+
+                                    {% for cat in categories %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{% url 'fetch_product_cate' %}?category_id={{ cat.id }}"
+                                            class="{% if category and category.id == cat.id %}active{% endif %}">
+                                            {{ cat.category_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'contact_us' %}">Support</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">More</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'blog_index' %}">Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'disclaimer' %}">Disclaimer</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'certification' %}">Certifications</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'shipping_policy' %}">Shipping Policy</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'terms_and_conditions' %}">Terms &
+                                            Conditions</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'refund_policy' %}">Cancellation, Return &
+                                            Refund
+                                            Policy</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                      
+
+                    </div>
+                    
+                    <div class="top-right">
+                        <div class="search-box me-5">
+                                <form class="d-flex input-group bg-transparent" method="GET" action="{% url 'product_search' %}">
+                                    <input class="form-control py-2 pr-5 mr-1 " type="search" placeholder="Search" aria-label="Search" name="query" value="{{ request.GET.query }}">
+                                    <button class="input-group-text border-0 bg-transparent ml-n5" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </form>
+                            <!-- </div> -->
+
+                        </div>
+                        
+                        <div class="d-lg-block d-none">
+                            {% if user.is_superuser %}
+                            <a href="{% url 'order_detail' %}" class="admin me-2"id="order-list">Admin</a>
+                            {% endif %}
+                            <a href="tel:1800-419-9029" class="top-link bg-green fa fa-phone">1800-419-9029</a>
+                        </div>
+                        <!-- <a class="nav-link fa fa-shopping-cart d-lg-block d-none nav-cart" href="#" title="Add to Cart"></a> -->
+                    </div>
+                </div>                     
+                
+            </div>
+            <nav class="navbar navbar-expand-lg d-lg-block d-none border-top" id="navigation">
+                <div class="container">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <!-- <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'images/header/acculogo.jpg' %}" alt="logo">
+                    </a> -->
+
+                    <div class="d-lg-none">
+                        <a href="{% url 'user_login'%}" class="bi-person custom-icon me-3"></a>
+
+                        <a href="{% url 'fetch_product_cate' %}" class="bi-bag custom-icon"></a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'index' %}" id="home">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'about' %}"id="about">About Us</a>
+                            </li>
+
+
+                            <!-- try to fetch category dynamically  -->
+
+                            <li class="nav-item dropdown category-list">
+                                <a class="nav-link dropdown-toggle {% if category %}active{% endif %}" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"id="link-categories">
+                                    Categories
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <!-- Link to show all products (No filter) -->
+                                    <li><a class="dropdown-item" href="{% url 'fetch_product_cate' %}">All Products</a>
+                                    </li>
+
+                                    <!-- Loop through categories to generate filter links -->
+                                    {% for cat in categories %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{% url 'fetch_product_cate' %}?category_id={{ cat.id }}"
+                                            class="{% if category and category.id == cat.id %}active{% endif %}">
+                                            {{ cat.category_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                            <!-- end -->
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'contact_us' %}"id="contact">Support</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">More</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'blog_index' %}">Blog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'disclaimer' %}">Disclaimer</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'certification' %}">Certifications</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'shipping_policy' %}">Shipping Policy</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'terms_and_conditions' %}">Terms &
+                                            conditions</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'refund_policy' %}">Cancellation, Return &
+                                            Refund
+                                            Policy</a></li>
+                                    
+                                  
+                                    <!-- <li><a class="dropdown-item" href="support.html">Support</a></li> -->
+                                </ul>
+                            </li>
+                           
+                        </ul>
+                   
+
+                        <div class="d-none d-lg-block rightNav">
+
+                            <ul>
+                                {% if user.is_authenticated %}
+                                {% if user.is_superuser %}
+                                <li class=" user-icon">
+                                    <a class="nav-link bi-plus-circle custom-icon" href="" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'add_product' %}">Add Product</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'add_blog' %}">Add Blog</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                <li class="me-2 cartIcon">
+                                    <a class="nav-link bi-heart custom-icon" href="{% url 'view_wishlist'%}"
+                                        title="view wishlist"id="wishlist">
+                                        <span class="notify-count"id ="wishlist-count">{{request.user|wishlist_item_count}}</span>
+                                    </a>
+                                </li>
+                                <li class="me-2 cartIcon">
+                                    <a class="nav-link bi-cart custom-icon" href="{% url 'view_cart'%}"
+                                        title="Add to Cart" id="cart">
+                                        <!-- <p style="color: red; display: inline;">{{request.user | cart_item_count}}
+                                        </p> -->
+                                        <span class="notify">{{request.user | cart_item_count}}</span>
+                                    </a>
+                                </li>
+                                <li class="user-icon me-2">
+                                    <a class="nav-link  dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="user-initials">{{ user.username|slice:":1"|upper }}</span>
+                                    </a>
+                                <ul class="dropdown-menu">
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" style="font-size:1rem;line-height: 0.5 !important;"
+                                            href="{% url 'index' %}">{{user.username|capfirst}}</a>
+                                    </li>
+
+                                    <li><a class="nav-link" href="{% url 'user_logout' %}" style="font-size:1rem;line-height: 0.5 !important;">Sign Out</a></li>
+                                    
+                                </ul>
+                            </li>
+                                {% else %}
+                                <li class="user-icon me-2">
+                                    <a class="nav-link bi-person custom-icon" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+
+                                        <li><a class="nav-link" href="{% url 'user_login' %}">Sign In</a> </li>
+                                        <li><a class="nav-link"href="{% url 'user_register' %}">Sign Up</a> </li>
+
+                                    </ul>
+                                </li>
+                                {% endif %}
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+            </nav>
+            <div class="d-lg-none resp-searchbar">
+                <div class="search-box">
+                    <form class="d-flex input-group bg-transparent" method="GET" action="/search/">
+                        <input class="form-control py-2 pr-5 mr-1 " type="search" placeholder="Search"
+                            aria-label="Search" name="query" value="">
+                        <button class="input-group-text border-0 bg-transparent ml-n5" type="submit"><i
+                                class="fa fa-search" aria-hidden="true"></i></button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+   
+        <section class="section-gap topSpace">
+            <div class="container">
+                <div class="col-12">
+                    <div class="col-12 text-left">
+                        <h4 class="link-head">
+                            <a href="{% url 'index' %}">Home</a><span>></span>
+                        
+                                <a href="#">Orders</a>  <!-- Category name if selected -->
+                      
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 wishlist">
+                        
+                        <table class="table wishlist-items table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Product Image</th>
+                                    <th>Order Id</th>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Total Amount</th>
+                                    <th>Customer Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                               <tr>
+                                {% for item in order.items.all %}
+                                    <!-- <td><img src="{{item.product.img.url}}" alt=""></td> -->
+                                
+                                <td>
+                                    <div class="cart-img"><img src="{{ item.product.img.url }}"
+                                            alt="{{ item.product.Product_Name }}"></div>
+                                </td>
+                                {% endfor %}
+
+                                <td>{{ order.order_id }}</td>
+                                {% for item in order.items.all %}                     
+                                <td>{{ item.product.Product_Name }}</td>
+                                <td>{{ item.quantity }} </td>
+                                {% endfor %}
+                                
+                                <td>{{ order.status }}</td>
+                                <td>₹{{ order.get_total_price }}</td>
+                              
+                                <td>
+                                        <div class="user-detail"><span class="user-data"></span> <span>{{ order.checkout_address.first_name }} {{ order.checkout_address.last_name }}</span></div>
+                                        <div class="user-detail"><span class="user-data"></span> <span>{{ order.checkout_address.phone }}</span></div>
+                                        <div class="user-detail"><span class="user-data"></span> <span>{{ order.checkout_address.email }}</span></div>
+                                        <div class="user-detail"><span class="user-data"></span> 
+                                            <span>{{ order.checkout_address.address }}, {{ order.checkout_address.city }}, {{ order.checkout_address.state }},
+                                            {{ order.checkout_address.zip_code }}, {{ order.checkout_address.country.name }}</span>
+                                        </div>
+                                </td>
+                               </tr>
+                               {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                       
+                       
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer border-top">
+        <div class="container">
+            <div class="row">
+
+                <div class="column-1 mb-4">
+                    <h4 class="text-white mb-3"><a href="{% url 'index' %}"><img
+                                src="{% static 'images/header/acculogo.jpg' %}" alt="logo"></a></h4>
+                    <p class="large-paragraph">One stop Solution for <br> Medical Equipment's & Furniture's.</p>
+                    <p class="large-paragraph">Our vision involves fostering a culture of continuous innovation, where
+                        we actively seek advancements in medical technology.</p>
+                </div>
+
+                <div class="column-2">
+                    <h5 class="mb-3">Get in touch</h5>
+
+                    <ul class="footer-menu">
+                        <li class="footer-menu-item footer-menu-link"><i class="fa fa-map-marker"
+                                aria-hidden="true"></i>Industrial Unit- 39 Block- B, <br> Sector- 63 Noida Gautam Buddha
+                            <br> Nagar, Uttar Pradesh- 201301</li>
+
+                        <li class="footer-menu-item"><a href="mailto:info@accuremedical.in" class="footer-menu-link"><i
+                                    class="fa fa-envelope-o" aria-hidden="true"></i>info@accuremedical.in</a></li>
+
+                        <li class="footer-menu-item"><a href="tel:0120-4916914" class="footer-menu-link"><i
+                                    class="fa fa-phone" aria-hidden="true"></i>0120-4916914</a></li>
+
+                                    <li class="footer-menu-item footer-menu-link"><i class="fa fa-clock-o"
+                                        aria-hidden="true"></i>Monday to Saturday <br>Time: 10:00 AM to 6:30 PM</li>
+
+                    </ul>
+                </div>
+
+                <div class="column-3">
+                    <h5 class="mb-3">Quick Link</h5>
+
+                    <ul class="footer-menu">
+
+                        <li class="footer-menu-item"><a href="{% url 'index' %}" class="footer-menu-link"><i class="fa fa-hand-o-right"
+                                    aria-hidden="true"></i>Home</a></li>
+
+                        <li class="footer-menu-item"><a href="{% url 'index' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Categories</a></li>
+
+                        <!-- <li class="footer-menu-item"><a href="./products.html" class="footer-menu-link"><i class="fa fa-hand-o-right" aria-hidden="true"></i>Shop</a></li> -->
+
+                        <li class="footer-menu-item"><a href="{% url 'contact_us' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Support</a></li>
+                        <li class="footer-menu-item"><a href="{% url 'certification' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Certificates</a></li>
+                        <li class="footer-menu-item"><a href="{% url 'blog_index' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="column-3">
+                    <h5 class="mb-3">Policy</h5>
+                    <ul class="footer-menu">
+
+                        <li class="footer-menu-item"><a href="{% url 'terms_and_conditions' %}"
+                                class="footer-menu-link"><i class="fa fa-hand-o-right" aria-hidden="true"></i>Terms &
+                                Conditions</a></li>
+
+                        <li class="footer-menu-item"><a href="{% url 'shipping_policy' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Shipping Policy</a></li>
+
+                        <li class="footer-menu-item"><a href="{% url 'refund_policy' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Cancellation, Return & <br> Refund
+                                Policy</a></li>
+
+                        <li class="footer-menu-item"><a href="{% url 'disclaimer' %}" class="footer-menu-link"><i
+                                    class="fa fa-hand-o-right" aria-hidden="true"></i>Disclaimer</a></li>
+                    </ul>
+
+                </div>
+
+                <div class="col-12 icon-footer">
+                    <div class="col-lg-6 col-md-12 flex-1">
+                        <a href="https://www.instagram.com/accuremedical/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100091662753553" target="_blank"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
+                        <a href="https://www.youtube.com/@AccureMedical" target="_blank"><i class="fa fa-youtube-play" aria-hidden="true"></i></a>
+                        <a href="https://www.linkedin.com/in/prashant-sharma-14604028b" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                        <a href="https://x.com/AccuMart123" target="_blank"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="col-lg-6 col-md-12 flex-2">
+                        <p class="large-paragraph"><strong>Toll Free No.</strong> </p><a
+                            href="tel:1800-419-9029">1800-419-9029</a>
+                    </div>
+                </div>
+
+                <div class="div-separator m-auto my-3"></div>
+
+                <div class="col-12 text-center footer-detail">
+                    <p class="large-paragraph"><strong>CIN:</strong> U52603DL2020PTC363991</p>
+                </div>
+
+                <div class="div-separator m-auto mt-3"></div>
+
+                <div class="col-12 copyright-footer">
+                    <div class="row">
+                        <div class="col-lg-6 col-12">
+                            <p class="copyright-text"><strong>Accure Medical Pvt. Ltd.</strong> © Copyright 2020 All
+                                Rights Reserved.</p>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="payment-icon">
+                                <img src="{% static 'images/header/visa.png' %}" alt="">
+                                <img src="{% static 'images/header/maestro.jpg' %}" alt="">
+                                <img src="{% static 'images/header/MASTERCARD.jpg' %}" alt="">
+                                <img src="{% static 'images/header/paytm.jpg' %}" alt="">
+                                <img src="{% static 'images/header/rupay.jpg' %}" alt="">
+                                <img src="{% static 'images/header/UPI.jpg' %}" alt="">
+                                <img src="{% static 'images/header/net-banking.png' %}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        
+        $(document).ready(function () {
+            // Handle removing a product from the wishlist
+            $(".remove-from-wishlist").click(function (event) {
+                event.preventDefault();  
+
+                var productId = $(this).data('product-id');
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                $.ajax({
+                    url: "/remove-from-wishlist/" + productId + "/", 
+                    method: "POST",
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    success: function (response) {
+                        if (response.removed_product) {
+                            $("button[data-product-id='" + productId + "']").closest("tr").remove();
+
+                            $(".notify-count").text(response.wishlist_item_count);
+                        }
+                        alert(response.message);
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: " + error); 
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/Headroom.js' %}"></script>
+    <script src="{% static 'js/jQuery.headroom.js' %}"></script>
+    <script src="{% static 'js/slick.min.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/script.js'%}"></script>
+    
+</body>
+
+</html>

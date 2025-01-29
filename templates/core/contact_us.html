@@ -1,0 +1,139 @@
+
+{% extends "core/base.html" %}
+
+{% load static %}
+{% load cart_template_tag %}
+{% load form_filters %}
+{% block content %}
+
+
+            <section class="contact section-padding topSpace">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <h2 class="mb-2 text-center">Contact <span>Us</span></h2>
+                            <p class="large-paragraph text-center">Got a question? we had love to hear from you. send us a message and we will respond <br>as soon as possible.</p>
+
+                            <div class="contact-map mt-3">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.396119427063!2d77.37517207422225!3d28.617887784747943!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce5315367042f%3A0xdcfc08bdad20fe22!2sAccure%20Medical%20Private%20Limited!5e0!3m2!1sen!2sin!4v1732954218140!5m2!1sen!2sin" frameborder="0" width="100%" height="280" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <h5 class="mb-3">Drop us message</h5>
+
+                            <form class="contact-form me-lg-5 pe-lg-3d-flex flex-column " method="POST"role="form">
+                                {% csrf_token %}
+                                
+                                <!-- Display success or error messages -->
+                                {% if messages %}
+                                    <div class="alert w-100" style="background-color: #f7f7f7;list-style-type: None;">
+                                        <ul>
+                                            {% for message in messages %}
+                                                <li style="list-style-type: None; color: #0f7619;">{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                        
+                                <!-- Name Field -->
+                                <div class="mb-3">
+                                    {{ form.name }}
+                                    <!-- <label for="name">Full Name</label> -->
+                                    {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.name.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                        
+                                <!-- Email Field -->
+                                <div class="mb-3">
+                                    {{ form.email }}
+                                    <!-- <label for="email">Email Address</label> -->
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.email.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                        
+                                <!-- Subject Field -->
+                                <div class=" mb-3">
+                                    {{ form.subject }}
+                                    <!-- <label for="subject">Subject</label> -->
+                                    {% if form.subject.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.subject.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                        
+                                <!-- Message Field -->
+                                <div class="mb-3 flex-grow-1">
+                                    {{ form.message }}
+                                    <!-- <label for="message">Message</label> -->
+                                    {% if form.message.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.message.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                        
+                                <!-- Submit Button -->
+                                <div class="col-lg-5 col-6">
+                                    <button type="submit" class="btn greenBtn">Send</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        
+                        
+            
+                        <!-- Right Column for Contact Information -->
+                        <div class="col-lg-6 col-12 mt-5 mt-lg-0">
+                            <div class="row">
+                                <div class="col-6 border-end contact-info">
+                                    <h6 class="mb-3 greenText">Work Address</h6>
+                                    <p class="custom-link">
+                                        Industrial Unit - 39 Block- B, Sector- 63 Noida Gautam Buddha Nagar, Uttar Pradesh- 201301
+                                    </p>
+                                </div>
+            
+                                <div class="col-6 contact-info">
+                                    <h6 class="mb-3 greenText">Registered Address</h6>
+                                    <p class="custom-link">
+                                        Ground Floor Plot no -183 Pocket N, Sector-2, DSIIDC, DSIIDC Industrial Area, North West, Delhi, 110039
+                                    </p>
+                                </div>
+            
+                                <div class="col-6 border-top border-end contact-info">
+                                    <h6 class="mb-3 greenText">Our Office</h6>
+                                    <p class="custom-link">One stop Solution for Medical Equipment's & Furniture's.</p>
+                                </div>
+            
+                                <div class="col-6 border-top contact-info">
+                                    <h6 class="mb-3 greenText">Follow Us</h6>
+                                    <ul class="social-icon">
+                                        <li><a href="https://www.linkedin.com/in/prashant-sharma-14604028b" target="_blank" class="social-icon-link bi-linkedin"></a></li>
+                                        <li><a href="https://www.youtube.com/@AccureMedical" target="_blank" class="social-icon-link bi-youtube"></a></li>
+                                        <li><a href="https://www.instagram.com/accuremedical/" class="social-icon-link bi-instagram"></a></li><br>
+                                        <li><a href="https://www.facebook.com/profile.php?id=100091662753553" target="_blank" class="social-icon-link bi-facebook"></a></li>
+                                        <li><a href="https://x.com/AccuMart123" target="_blank" class="social-icon-link bi-twitter"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+            
+                    </div>
+                </div>
+            </section>
+            
+ {% endblock %}

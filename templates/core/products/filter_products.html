@@ -1,0 +1,72 @@
+
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+        <section class="featured-product section-padding topSpace">
+            <div class="container">
+                <div class="row">
+                    <!-- Category Filter -->
+                    <div class="col-12">
+                        <div class="col-12 text-left">
+                            <h4 class="link-head">
+                                <a href="{% url 'index' %}">Home</a><span>></span>
+                                {% if category %}
+                                    <a href="#">{{ category.category_name }}</a>  <!-- Category name if selected -->
+                                {% else %}
+                                    <a href="#">All Products</a>  <!-- Default text if no category is selected -->
+                                {% endif %}
+                            </h4>
+                        </div>
+                    </div>
+    
+
+                    {% for product in products %}
+                        <div class="col-lg-3 col-12 mb-3">
+                            <div class="product-thumb box-shadow">
+                                {% if user.is_superuser %}
+                                <a href="{% url 'edit_product' id=product.id %}" class="editable fa fa-pencil"></a>
+                                <form method="POST" action="{% url 'delete_product' product.id %}" class="trashBtn">
+                                    {% csrf_token %}
+                                    <button type="submit" class="fa fa-trash"></button>
+                                </form>
+                                {% endif %}
+                                <div class="productImage text-center">
+                                    <a href="{% url 'product_desc' product.pk %}">
+                                        <img src="{{product.img.url}}" class="product-image" alt="">
+                                    </a>
+                                </div>
+                                <!-- <div class="product-top d-flex">
+                                    <span class="product-alert me-auto">New Arrival</span>
+                                </div> -->
+                                <div class="product-action">
+                                    <a href="{% url 'view_cart' %}" class="info-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></a>
+                                    <a href="{% url 'product_desc' product.pk %}" class="info-icon"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                </div>
+                                <div class="product-info">
+                                    <h5 class="product-title">
+                                        <a href="{% url 'product_desc' product.pk %}" class="product-title-link">{{product.Product_Name}}</a>
+                                    </h5>
+                                </div>
+                                <div>
+                                    <p class="product-p">₹{{product.price}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-lg-3 col-12 mb-3">
+                            <div class="product-thumb box-shadow">
+                                <p class="lead">No Product is Added in this Category!</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+        
+                </div>
+            </div>
+        </section>
+        
+        
+{% endblock %}
