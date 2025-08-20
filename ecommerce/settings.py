@@ -144,18 +144,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CSRF_COOKIE_SECURE = True
 
-'''
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtpout.secureserver.net' 
-EMAIL_PORT = 587  
-EMAIL_USE_TLS = True 
-EMAIL_HOST_USER = 'support@accuremedical.in' 
-EMAIL_HOST_PASSWORD = 'Support@2023'  
-DEFAULT_FROM_EMAIL = 'support@accuremedical.in'
-ADMIN_EMAIL ='reenu@accuremedical.in'
-
-'''
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com' 
 EMAIL_PORT = 587 
@@ -169,16 +158,11 @@ ADMIN_EMAIL ='arhurai@gmail.com'
 
 
 # razorpay payment gateway integration
-RAZORPAY_ID ="rzp_test_EPAE67LdMYkVDm"
-RAZORPAY_SECRET="IPxBQi0NYhQJ03M6hiOZGPDO"
+RAZORPAY_ID ="test"
+RAZORPAY_SECRET="test_OZGPDO"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# PAYU_MERCHANT_KEY = 'Rs1pDx'
-# PAYU_MERCHANT_SALT = 'Ynv7qKmRzqoU0zzK2578OILBHa5Sb7CJ'
-# PAYU_MERCHANT_ID = 'de5245e71c0854a5988917bfd99c7c22910e902f10a2883879362bf9d8099e38'
-# PAYU_API_URL = 'https://secure.payu.in/_payment'  # Use the appropriate URL (test or live)
 
 PAYU_MERCHANT_KEY_TEST = '8A6lU0'
 PAYU_MERCHANT_SALT_TEST = '6WM5jhuuCISJmxYnyHhjOB74kfTT2aki'
